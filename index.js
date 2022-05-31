@@ -13,6 +13,9 @@ app.use(express.static('public'))
 app.use(express.urlencoded({extended:true}))
 app.use('/user',userPage)
 
+app.set('view engine','pug')
+app.set('views','./views')
+
 app.get('/',(req,res)=>{
     res.send('OOK')
 })
