@@ -2,12 +2,18 @@ const User = require('../model/user.model')
 const bcrypt = require('bcrypt')
 const config = require('config')
 const userService = require('../services/user.service')
+const {validateUser} = require('../validator/user.validator')
 
 const getLoginForm = (req,res)=>{
     res.render('login/layout')
 }
 const login = async(req,res)=>{
     const {email,password} = req.body
+    const fields = {email,password}
+    const {error,value} = validateUser(fields)
+    if(error){
+        return res.render('signup/layout',{message:error.details[0].message})
+     }
     const findUser = await userService.findEntry({email})
     if(!findUser){
         return res.render('signup/layout',{message:'Sign up Email does not Exist'})
@@ -24,6 +30,11 @@ const getsignupForm = (req,res)=>{
 }
 const signup = async(req,res)=>{
     const {email,password} = req.body
+    const fields = {email,password}
+    const {error,value} = validateUser(fields)
+    if(error){
+        return res.render('signup/layout',{message:error.details[0].message})
+     }
     const findUser = await userService.findEntry({email})
 //    const findUser = await User.findOne({email})
     if(findUser){
